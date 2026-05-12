@@ -158,12 +158,13 @@ def create_artwork():
     
     # === TYPOGRAPHY ===
     
-    font_path = "/mnt/skills/examples/canvas-design/canvas-fonts/"
+    font_path = str(Path(__file__).parent / "fonts") + "/"
     try:
         font_main = ImageFont.truetype(font_path + "Jura-Light.ttf", 42 * SCALE)
         font_small = ImageFont.truetype(font_path + "DMMono-Regular.ttf", 16 * SCALE)
         font_accent = ImageFont.truetype(font_path + "Italiana-Regular.ttf", 28 * SCALE)
-    except:
+    except OSError as e:
+        print(f"Warning: could not load fonts from {font_path}: {e}. Falling back to default.")
         font_main = ImageFont.load_default()
         font_small = font_main
         font_accent = font_main
@@ -221,5 +222,6 @@ if __name__ == "__main__":
     
     # Save the artwork
     output_path = Path(__file__).parent / "renders" / "harmonic-resonance.png"
+    output_path.parent.mkdir(exist_ok=True)
     artwork.save(output_path, "PNG", dpi=(300, 300))
     print(f"Saved to {output_path}")

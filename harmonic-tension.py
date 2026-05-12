@@ -25,13 +25,6 @@ def draw_circle_outline(draw, cx, cy, radius, color, width=3):
         r = radius - w
         draw.ellipse([cx - r, cy - r, cx + r, cy + r], outline=color)
 
-def draw_arc(draw, cx, cy, radius, start_angle, end_angle, color, width=4):
-    """Draw an arc segment"""
-    for w in range(width):
-        r = radius - w
-        draw.arc([cx - r, cy - r, cx + r, cy + r], 
-                 start=start_angle, end=end_angle, fill=color, width=1)
-
 def create_artwork():
     # Create canvas with cream background
     img = Image.new('RGB', (WIDTH, HEIGHT), SOFT_CREAM)
@@ -145,12 +138,13 @@ def create_artwork():
     # === TYPOGRAPHY - minimal, integrated ===
     
     # Load fonts
-    font_path = "/mnt/skills/examples/canvas-design/canvas-fonts/"
+    font_path = str(Path(__file__).parent / "fonts") + "/"
     try:
         font_main = ImageFont.truetype(font_path + "Jura-Light.ttf", 42 * SCALE)
         font_small = ImageFont.truetype(font_path + "DMMono-Regular.ttf", 16 * SCALE)
         font_accent = ImageFont.truetype(font_path + "Italiana-Regular.ttf", 28 * SCALE)
-    except:
+    except OSError as e:
+        print(f"Warning: could not load fonts from {font_path}: {e}. Falling back to default.")
         font_main = ImageFont.load_default()
         font_small = font_main
         font_accent = font_main
@@ -201,5 +195,6 @@ if __name__ == "__main__":
     
     # Save the artwork
     output_path = Path(__file__).parent / "renders" / "harmonic-tension.png"
+    output_path.parent.mkdir(exist_ok=True)
     artwork.save(output_path, "PNG", dpi=(300, 300))
     print(f"Saved to {output_path}")

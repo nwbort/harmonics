@@ -29,23 +29,20 @@ def draw_circle_outline(draw, cx, cy, radius, color, width=3):
 
 def draw_ellipse_outline(draw, cx, cy, rx, ry, color, width=3, rotation=0):
     """Draw a rotated ellipse outline using point sampling"""
+    steps = 1440  # 0.25-degree steps — smooth at high resolution
+    rot_rad = math.radians(rotation)
+    cos_rot = math.cos(rot_rad)
+    sin_rot = math.sin(rot_rad)
     points = []
-    for angle in range(0, 360, 2):
-        rad = math.radians(angle)
-        # Ellipse point before rotation
+    for i in range(steps):
+        rad = 2 * math.pi * i / steps
         x = rx * math.cos(rad)
         y = ry * math.sin(rad)
-        # Apply rotation
-        rot_rad = math.radians(rotation)
-        x_rot = x * math.cos(rot_rad) - y * math.sin(rot_rad)
-        y_rot = x * math.sin(rot_rad) + y * math.cos(rot_rad)
-        points.append((cx + x_rot, cy + y_rot))
-    
-    # Draw the ellipse as connected lines
-    for i in range(len(points)):
-        p1 = points[i]
-        p2 = points[(i + 1) % len(points)]
-        draw.line([p1, p2], fill=color, width=width)
+        points.append((cx + x * cos_rot - y * sin_rot,
+                       cy + x * sin_rot + y * cos_rot))
+
+    for i in range(steps):
+        draw.line([points[i], points[(i + 1) % steps]], fill=color, width=width)
 
 def create_artwork():
     # Create canvas with cream background
@@ -218,12 +215,13 @@ def create_artwork():
     
     # === TYPOGRAPHY ===
     
-    font_path = "/mnt/skills/examples/canvas-design/canvas-fonts/"
+    font_path = str(Path(__file__).parent / "fonts") + "/"
     try:
         font_main = ImageFont.truetype(font_path + "Jura-Light.ttf", 42 * SCALE)
         font_small = ImageFont.truetype(font_path + "DMMono-Regular.ttf", 16 * SCALE)
         font_accent = ImageFont.truetype(font_path + "Italiana-Regular.ttf", 28 * SCALE)
-    except:
+    except OSError as e:
+        print(f"Warning: could not load fonts from {font_path}: {e}. Falling back to default.")
         font_main = ImageFont.load_default()
         font_small = font_main
         font_accent = font_main
@@ -283,5 +281,6 @@ if __name__ == "__main__":
     
     # Save the artwork
     output_path = Path(__file__).parent / "renders" / "harmonic-orbit.png"
+    output_path.parent.mkdir(exist_ok=True)
     artwork.save(output_path, "PNG", dpi=(300, 300))
     print(f"Saved to {output_path}")
