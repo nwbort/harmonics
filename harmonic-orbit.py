@@ -232,7 +232,7 @@ def create_artwork():
               font=font_main, fill=DEEP_NAVY, anchor="mm")
     
     # Reference marks
-    draw.text((140 * SCALE, HEIGHT - 140 * SCALE), "iii", font=font_small, fill=MUTED_SAGE)
+    draw.text((WIDTH - 140 * SCALE, HEIGHT - 140 * SCALE), "iii", font=font_small, fill=MUTED_SAGE, anchor="rm")
     draw.text((WIDTH - 140 * SCALE, 180 * SCALE), "·", font=font_small, fill=MUTED_SAGE, anchor="rm")
     
     # Subtle phrase
