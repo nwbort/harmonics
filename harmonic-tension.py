@@ -156,7 +156,6 @@ def create_artwork():
     
     # Small reference marks - like a diagram notation
     draw.text((140 * SCALE, 180 * SCALE), "i", font=font_small, fill=MUTED_SAGE)
-    draw.text((2260 * SCALE, 2850 * SCALE), "ii", font=font_small, fill=MUTED_SAGE)
     
     # Subtle phrase - whispered
     draw.text((180 * SCALE, HEIGHT - 120 * SCALE), "equilibrium", 

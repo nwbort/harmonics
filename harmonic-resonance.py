@@ -176,7 +176,6 @@ def create_artwork():
     
     # Reference marks
     draw.text((WIDTH - 140 * SCALE, 180 * SCALE), "ii", font=font_small, fill=MUTED_SAGE, anchor="rm")
-    draw.text((140 * SCALE, 2400 * SCALE), "·", font=font_small, fill=MUTED_SAGE)
     
     # Subtle phrase - upper region this time
     draw.text((WIDTH - 180 * SCALE, 420 * SCALE), "sympathetic", 
