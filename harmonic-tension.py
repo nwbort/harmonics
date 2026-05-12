@@ -3,6 +3,7 @@
 Harmonic Tension - A visual expression of equilibrium and balanced forces
 """
 
+from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 import math
 
@@ -199,6 +200,6 @@ if __name__ == "__main__":
     print("Refining composition...")
     
     # Save the artwork
-    output_path = "/home/claude/harmonic-tension.png"
-    artwork.save(output_path, "PNG", quality=95)
+    output_path = Path(__file__).parent / "renders" / "harmonic-tension.png"
+    artwork.save(output_path, "PNG", dpi=(300, 300))
     print(f"Saved to {output_path}")

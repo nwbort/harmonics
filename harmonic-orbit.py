@@ -4,6 +4,7 @@ Harmonic Orbit - A visual expression of gravitational pull and elliptical paths
 Created by Nick Twort
 """
 
+from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 import math
 
@@ -281,6 +282,6 @@ if __name__ == "__main__":
     print("Refining composition...")
     
     # Save the artwork
-    output_path = "/home/claude/harmonic-orbit.png"
-    artwork.save(output_path, "PNG", quality=95)
+    output_path = Path(__file__).parent / "renders" / "harmonic-orbit.png"
+    artwork.save(output_path, "PNG", dpi=(300, 300))
     print(f"Saved to {output_path}")
