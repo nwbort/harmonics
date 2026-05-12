@@ -5,7 +5,7 @@ Created by Nick Twort
 """
 
 from pathlib import Path
-from PIL import Image, ImageCms, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont
 import math
 
 # Canvas dimensions (massive resolution for print quality)
@@ -44,9 +44,8 @@ def draw_ellipse_outline(draw, cx, cy, rx, ry, color, width=3, rotation=0):
     for i in range(steps):
         draw.line([points[i], points[(i + 1) % steps]], fill=color, width=width)
 
-def create_artwork():
-    # Create canvas with cream background
-    img = Image.new('RGB', (WIDTH, HEIGHT), SOFT_CREAM)
+def create_artwork(bg=None):
+    img = Image.new('RGB', (WIDTH, HEIGHT), bg or (255, 255, 255))
     draw = ImageDraw.Draw(img)
     
     # === GEOMETRIC COMPOSITION ===
@@ -274,31 +273,5 @@ def create_artwork():
 
 
 if __name__ == "__main__":
-    print("Creating Harmonic Orbit artwork...")
-    artwork = create_artwork()
-    print("Converting to CMYK...")
-
-    icc_dir = Path(__file__).parent / "icc"
-    try:
-        srgb = ImageCms.getOpenProfile(str(icc_dir / "sRGB.icc"))
-        cmyk_profile_path = icc_dir / "ISOcoated_v2_300_eci.icc"
-        cmyk = ImageCms.getOpenProfile(str(cmyk_profile_path))
-        transform = ImageCms.buildTransform(
-            srgb, cmyk, "RGB", "CMYK",
-            renderingIntent=ImageCms.Intent.RELATIVE_COLORIMETRIC,
-            flags=ImageCms.Flags.BLACKPOINTCOMPENSATION,
-        )
-        artwork = ImageCms.applyTransform(artwork, transform)
-        icc_bytes = cmyk_profile_path.read_bytes()
-    except Exception as e:
-        print(f"Warning: ICC conversion failed ({e}), using basic CMYK fallback")
-        artwork = artwork.convert("CMYK")
-        icc_bytes = None
-
-    output_path = Path(__file__).parent / "renders" / "harmonic-orbit.pdf"
-    output_path.parent.mkdir(exist_ok=True)
-    save_kwargs = {"resolution": 300}
-    if icc_bytes:
-        save_kwargs["icc_profile"] = icc_bytes
-    artwork.save(output_path, "PDF", **save_kwargs)
-    print(f"Saved to {output_path}")
+    from export import export
+    export(create_artwork, "harmonic-orbit", SOFT_CREAM)
